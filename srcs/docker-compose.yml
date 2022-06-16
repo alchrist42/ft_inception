@@ -1,80 +1,66 @@
 networks:
   incep_nw:
-    name : inet
+    name: inet
 
 #Создание томов
 volumes:
-    ## Здесб хранится  данные wordpress
-    wp-volume:
-        #Задать имя тому
-        name: volume
-        driver: local
-        driver_opts:
-            type: volume
-            o: bind
-            device: /home/alchrist/inception/data/wp
-    # ## Здесб хранится  данные adminer
-    # adminer-volume:
-    #     #Задать имя тому
-    #     name: adminer-volume
-    #     driver: local
-    #     driver_opts:
-    #         type: ext4
-    #         o: bind
-    #         device: /home/salyce/data/adminer
-    ### Здесь храниться mysql
-    db-volume:
-        name: db-volume
-        driver: local
-        driver_opts:
-            type: volume
-            o: bind
-            device: /home/alchrist/inception/data/db
+  wp-volume:
+    name: volume
+    driver: local
+    driver_opts:
+      type: volume
+      o: bind
+      device: /home/alchrist/data/wp
+  db-volume:
+    name: db-volume
+    driver: local
+    driver_opts:
+      type: volume
+      o: bind
+      device: /home/alchrist/data/db
 
 services:
   nginx:
     container_name: nginx
-    build: ./requirements/nginx
-    image: nginx
-    networks: 
+    build: ./nginx
+    # image: nginx
+    networks:
       - incep_nw
-    depends_on:
-      - wordpress
+    # depends_on:
+    #   - wordpress
     ports:
       - "443:443"
+      - "80:80"
     volumes:
-      - wp:/var/www/wordpress
+      - wp-volume:/var/www/wordpress
     env_file:
       - .env
     restart: always
 
-  # EXAMPLE for OSRM, please consult the repo for details: https://hub.docker.com/r/osrm/osrm-backend/
   wordpress:
     container_name: wordpress
-    networks: 
-      - incep_nw
-    image: osrm/osrm-backend
-    restart: always
-    ports:
-      - 5000:5000
+    build: ./wordpress
+    depends_on:
+      - mariadb
+    expose:
+      - "9000"
     volumes:
-      - ./osrm:/data
-    command: "osrm-routed --max-matching-size 1000 --max-table-size 1000 --max-viar"
-    
+      - wp-volume:/var/www/wordpress
+    networks:
+      - incep_nw
+    env_file:
+      - .env
+    restart: always
 
   mariadb:
     container_name: mariadb
-    build: ./requirements/mariadb
-    image: mariadb
-    ports: 
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: 4m3SxCpaQb*6LB#
-      MYSQL_DATABASE: db_wordpress
-      MYSQL_USER: user_wp
-      MYSQL_PASSWORD: user_wp
+    build: ./mariadb
+    expose:
+      - "3306"
+    env_file:
+      - .env
     volumes:
-      - db:/var/lib/mysql
+      - db-volume:/var/lib/mysql
     networks:
-      - project
+      - incep_nw
     restart: always
