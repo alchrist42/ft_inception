@@ -6,7 +6,7 @@ check=$(find /var/www/wordpress -name index.php | wc -l)
 if [ $check -eq "0" ] ;
 then
 
-# Скачеваем установочные файлы
+# Скачиваем установочные файлы
 wp core download    --allow-root --locale=ru_RU --path="/var/www/wordpress"
 
 # Подключение к базе данных

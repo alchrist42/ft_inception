@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# в глобальном файле настроек достаточно расскоментить порт и закомментить строку bind
 sed -i "s/bind-ad/\#bind-ad/" "/etc/mysql/mariadb.conf.d/50-server.cnf"
 sed -i "s/\#port  /port   /" "/etc/mysql/mariadb.conf.d/50-server.cnf"
 
@@ -12,10 +13,11 @@ if [ ! -d /var/lib/mysql/$DB_WP_NAME/ ]; then
     mysqladmin -u root password ${DB_ROOT_PASSWORD}
     service mysql stop
 else
+    # без этого будет ошибка соединения с базой данных, достаточно создания сокета
     mkdir /var/run/mysqld
     mkfifo var/run/mysqld/mysqld.sock
-    touch /var/run/mysqld/mysqld.pid
-    chown -R mysql /var/run/mysqld
+    # touch /var/run/mysqld/mysqld.pid
+    # chown -R mysql /var/run/mysqld
 fi
 chown -R mysql:mysql /var/lib/mysql
 
