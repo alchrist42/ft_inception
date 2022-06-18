@@ -16,8 +16,6 @@ else
     # без этого будет ошибка соединения с базой данных, достаточно создания сокета
     mkdir /var/run/mysqld
     mkfifo var/run/mysqld/mysqld.sock
-    # touch /var/run/mysqld/mysqld.pid
-    # chown -R mysql /var/run/mysqld
 fi
 chown -R mysql:mysql /var/lib/mysql
 

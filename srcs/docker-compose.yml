@@ -2,7 +2,6 @@ networks:
   incep_nw:
     name: inet
 
-#Создание томов
 volumes:
   wp-volume:
     name: volume
@@ -23,11 +22,10 @@ services:
   nginx:
     container_name: nginx
     build: ./nginx
-    # image: nginx
     networks:
       - incep_nw
-    # depends_on:
-    #   - wordpress
+    depends_on:
+      - wordpress
     ports:
       - "443:443"
       - "80:80"
@@ -61,6 +59,26 @@ services:
       - .env
     volumes:
       - db-volume:/var/lib/mysql
+    networks:
+      - incep_nw
+    restart: always
+
+  redis:
+    container_name: redis
+    build: ./bonus/redis
+    expose:
+      - "6379"
+    depends_on:
+      - wordpress
+    networks:
+      - incep_nw
+    restart: always
+
+  npuzzle:
+    container_name: npuzzle
+    build: ./bonus/npuzzle
+    expose:
+      - "8080"
     networks:
       - incep_nw
     restart: always

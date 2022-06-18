@@ -16,7 +16,9 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 
 # copy nginx config
 COPY ./wp-site.conf /etc/nginx/sites-available/
+COPY ./npuzzle-site.conf /etc/nginx/sites-available/
 RUN ln -s /etc/nginx/sites-available/wp-site.conf /etc/nginx/sites-enabled/wp-site.conf
+RUN ln -s /etc/nginx/sites-available/npuzzle-site.conf /etc/nginx/sites-enabled/npuzzle-site.conf
 RUN rm /etc/nginx/sites-enabled/default
 
 EXPOSE 443

@@ -44,6 +44,28 @@ wp user create      betta betta@alchrist.42.com \
 
 fi
 
+# Включаем поддержку redis (bonus)
+# same, but wp-cli mode
+wp config set WP_REDIS_HOST 'redis' \
+				--allow-root \
+				--path="/var/www/wordpress"
+
+wp config set WP_REDIS_PORT 6379 --raw  \
+				--allow-root \
+				--path="/var/www/wordpress"
+
+wp config set WP_CACHE true --raw \
+				--allow-root \
+				--path="/var/www/wordpress"
+
+wp plugin install redis-cache --activate \
+				--allow-root \
+				--path="/var/www/wordpress"
+
+wp redis enable  --allow-root \
+				--allow-root \
+				--path="/var/www/wordpress"
+
 service php7.3-fpm start ;
 service php7.3-fpm stop ;
 
