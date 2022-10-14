@@ -1,5 +1,5 @@
-PATH_BD = $$(pwd)/volumes/bd
-PATH_WP	 = $$(pwd)/volumes/wp
+PATH_BD = ~/data/db
+PATH_WP	 = ~/data/wp
 
 all: up
 
@@ -11,7 +11,7 @@ up:
 
 
 down:
-		docker-compose down
+		sudo docker-compose -f srcs/docker-compose.yml down
 
 stop:
 		sudo docker stop $$(sudo docker ps -aq)
@@ -19,15 +19,14 @@ stop:
 remove:
 		sudo docker rm $$(sudo docker ps -aq)
 
-rm_network:
-		docker network rm $$(docker network ls -q)
-
 rm_volumes:
 		@sudo rm -rf ${PATH_BD} 
 		@sudo rm -rf ${PATH_WP} 
 
-clean:	stop remove rm_volume  rm_network rm_volumes
+clean:	stop remove rm_volumes
 
 
 fclean: clean
-		sudo docker-compose -f srcs/docker-compose.yaml down --rmi all
+		sudo docker-compose -f srcs/docker-compose.yml down --rmi all
+
+re:		fclean up
